@@ -82,7 +82,7 @@ public class PersonnelService {
     public void loginPersonnel(Personnel personnel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (checkInList(personnel)) {
             HttpSession session = request.getSession();
-            session.setAttribute("User", personnel.getName());
+            session.setAttribute("user", personnel.getName());
             session.setMaxInactiveInterval(30 * 60);
             Cookie userName = new Cookie("user", personnel.getName());
             userName.setMaxAge(30 * 60);
