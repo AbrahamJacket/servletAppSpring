@@ -36,7 +36,7 @@ public class PersonnelController {
     @GetMapping("/personnel")
     @ResponseStatus(HttpStatus.OK)
     public List<Personnel> findAllPersonnel(){
-        return personnelService.findAllPersonnel();
+        return personnelService.getAllPersonnel();
     }
 
     @PutMapping("/personnel/{id}")
@@ -67,5 +67,10 @@ public class PersonnelController {
     @ResponseStatus(HttpStatus.OK)
     public void logoutUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         personnelService.logoutPersonnel(request, response);
+    }
+
+    @GetMapping("/check")
+    public void checkses(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        personnelService.checkses(request, response);
     }
 }

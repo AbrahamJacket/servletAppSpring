@@ -12,8 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-
-import static com.example.servletappspring.utility.AccessLevelCheck.checkInList;
+import java.util.Objects;
 
 @Service
 public class PersonnelService {
@@ -25,24 +24,17 @@ public class PersonnelService {
     }
 
     public Personnel registerPersonnel(Personnel personnel, HttpServletResponse response) throws Exception {
-        PrintWriter out = response.getWriter();
         List<Personnel> list = findAllPersonnel();
-        int status = 0;
-        int result = 1;
-        if (result == 0) {
             for (Personnel personnel1 : list) {
                 if (personnel1.getName().equals(personnel.getName())) {
-                    out.println("This personnel already exists!");
-                    result = 0;
+                    throw new Exception("This personnel already exists!");
                 }
             }
-            if (!personnel.getAccessLevel().equals(Personnel.AccessLevel.ADMIN)
-                    || !personnel.getAccessLevel().equals(Personnel.AccessLevel.MODERATOR)
-                    || !personnel.getAccessLevel().equals(Personnel.AccessLevel.USER)){
-                result = 0;
+            if (personnel.getAccessLevel() != Personnel.AccessLevel.ADMIN
+                    || personnel.getAccessLevel() != Personnel.AccessLevel.MODERATOR
+                    || personnel.getAccessLevel() != Personnel.AccessLevel.USER){
+                throw new Exception("Cannot register personnel!");
             }
-           throw new Exception("Cannot register personnell!");
-        }
         return personnelRepository.save(personnel);
     }
 
@@ -78,7 +70,7 @@ public class PersonnelService {
     public void loginPersonnel(Personnel personnel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if(checkInList(personnel)) {
             HttpSession session = request.getSession();
-            session.setAttribute("User", personnel.getName());
+            session.setAttribute("user", personnel.getName());
             session.setMaxInactiveInterval(30 * 60);
             Cookie userName = new Cookie("user", personnel.getName());
             userName.setMaxAge(30 * 60);
@@ -112,7 +104,7 @@ public class PersonnelService {
         out.println("Logged out successfully!");
     }
 
-    public List<Personnel> getAllUsers(){
+    public List<Personnel> getAllPersonnel(){
         return personnelRepository.findAll();
     }
 
@@ -126,5 +118,34 @@ public class PersonnelService {
     public Personnel.AccessLevel getPersonnelAccessLevel(HttpServletRequest request){
         HttpSession session = request.getSession(false);
         return findPersonnelByName(session.getAttribute("user").toString()).getAccessLevel();
+    }
+
+    public int checkAccessLevel(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        int status = 3;
+        if (session == null) {
+            status = 0;
+        } else if (getPersonnelAccessLevel(request) == Personnel.AccessLevel.USER) {
+            status = 1;
+        } else if (getPersonnelAccessLevel(request) == Personnel.AccessLevel.MODERATOR) {
+            status = 2;
+        }
+        return status;
+    }
+
+    public boolean checkInList(Personnel personnel) {
+        List<Personnel> list = findAllPersonnel();
+        for (Personnel personnel1 : list) {
+            if (personnel1.getName().equals(personnel.getName()) && personnel1.getPassword().equals(personnel.getPassword())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkses(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        PrintWriter out = response.getWriter();
+        out.println(session.getAttribute("user").toString());
     }
 }
