@@ -17,7 +17,7 @@ public class Personnel {
     @Column(name = "PERSONNEL_ACCESS_LEVEL")
     private AccessLevel accessLevel;
 
-    public enum AccessLevel{
+    public enum AccessLevel {
         ADMIN,
         MODERATOR,
         USER,

@@ -36,7 +36,7 @@ public class EmployeeService {
     }
 
     public List<Employee> getAllEmployee(HttpServletRequest request) throws Exception {
-        if (personnelService.checkAccessLevel(request) >1) {
+        if (personnelService.checkAccessLevel(request) >= 1) {
             return employeeRepository.findAll();
         } else throw new Exception("Acces Denied!");
     }

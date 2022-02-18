@@ -29,31 +29,31 @@ public class PersonnelController {
 
     @GetMapping("/personnel/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Personnel findPersonnelById(@PathVariable Long id){
+    public Personnel findPersonnelById(@PathVariable Long id) {
         return personnelService.findPersonnelbyId(id);
     }
 
     @GetMapping("/personnel")
     @ResponseStatus(HttpStatus.OK)
-    public List<Personnel> findAllPersonnel(){
+    public List<Personnel> findAllPersonnel() {
         return personnelService.findAllPersonnel();
     }
 
     @PutMapping("/personnel/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Personnel updatePersonnel(@RequestBody Personnel personnel, @PathVariable Long id){
+    public Personnel updatePersonnel(@RequestBody Personnel personnel, @PathVariable Long id) {
         return personnelService.updatePersonnel(personnel, id);
     }
 
     @DeleteMapping("/personnel/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePersonnelById(@PathVariable Long id){
+    public void deletePersonnelById(@PathVariable Long id) {
         personnelService.deletePersonnelById(id);
     }
 
     @DeleteMapping("/personnel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllPersonnel(){
+    public void deleteAllPersonnel() {
         personnelService.deleteAllPersonnel();
     }
 

@@ -26,11 +26,11 @@ public class PersonnelService {
     public Personnel registerPersonnel(Personnel personnel, HttpServletResponse response) throws Exception {
         List<Personnel> list = findAllPersonnel();
         int status = 0;
-            for (Personnel personnel1 : list) {
-                if (personnel1.getName().equals(personnel.getName())) {
-                    throw new Exception("This personnel already exists!");
-                }
+        for (Personnel personnel1 : list) {
+            if (personnel1.getName().equals(personnel.getName())) {
+                throw new Exception("This personnel already exists!");
             }
+        }
         switch (personnel.getAccessLevel()) {
             case ADMIN:
                 status = 1;
@@ -44,22 +44,22 @@ public class PersonnelService {
                 status = 1;
                 break;
         }
-            if (status == 0){
-                throw new Exception("Wrong access level!");
-            }
+        if (status == 0) {
+            throw new Exception("Wrong access level!");
+        }
         return personnelRepository.save(personnel);
     }
 
-    public Personnel findPersonnelbyId(Long id){
+    public Personnel findPersonnelbyId(Long id) {
         return personnelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Personnel not found with id = " + id));
     }
 
-    public List<Personnel> findAllPersonnel(){
+    public List<Personnel> findAllPersonnel() {
         return personnelRepository.findAll();
     }
 
-    public Personnel updatePersonnel(Personnel personnel, Long id){
+    public Personnel updatePersonnel(Personnel personnel, Long id) {
         return personnelRepository.findById(id)
                 .map(entity -> {
                     entity.setName(personnel.getName());
@@ -69,18 +69,18 @@ public class PersonnelService {
                 }).orElseThrow(() -> new EntityNotFoundException("Personnel not found with id = " + id));
     }
 
-    public void deletePersonnelById(Long id){
+    public void deletePersonnelById(Long id) {
         Personnel personnel = personnelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Personnel not found with id = " + id));
         personnelRepository.delete(personnel);
     }
 
-    public void deleteAllPersonnel(){
+    public void deleteAllPersonnel() {
         personnelRepository.deleteAll();
     }
 
     public void loginPersonnel(Personnel personnel, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if(checkInList(personnel)) {
+        if (checkInList(personnel)) {
             HttpSession session = request.getSession();
             session.setAttribute("User", personnel.getName());
             session.setMaxInactiveInterval(30 * 60);
@@ -116,14 +116,14 @@ public class PersonnelService {
         out.println("Logged out successfully!");
     }
 
-    public Personnel findPersonnelByName(String name){
+    public Personnel findPersonnelByName(String name) {
         Personnel personnel = personnelRepository.findPersonnelByName(name);
         if (name == null)
             throw new EntityNotFoundException("Personnel not found with name = " + name);
         return personnel;
     }
 
-    public Personnel.AccessLevel getPersonnelAccessLevel(HttpServletRequest request){
+    public Personnel.AccessLevel getPersonnelAccessLevel(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         return findPersonnelByName(session.getAttribute("user").toString()).getAccessLevel();
     }
